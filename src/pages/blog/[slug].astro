@@ -1,0 +1,28 @@
+---
+import { pb } from "../../lib/pocketbase";
+import BlogPost from "../../layouts/BlogPost.astro";
+
+const { slug } = Astro.params;
+
+const post = await pb
+    .collection("posts")
+    .getFirstListItem(`slug="${slug}" && status="published"`);
+
+if (!post) {
+    return Astro.redirect("/404");
+}
+
+// Ensure dates are actual Date objects if they come as strings
+const pubDate = post.pubDate ? new Date(post.pubDate) : undefined;
+const updatedDate = post.updatedDate ? new Date(post.updatedDate) : undefined;
+---
+
+<BlogPost
+    title={post.title}
+    description={post.description}
+    pubDate={pubDate || new Date()}
+    updatedDate={updatedDate}
+    heroImage={post.heroImage}
+>
+    <div set:html={post.content}></div>
+</BlogPost>
