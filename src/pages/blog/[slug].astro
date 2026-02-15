@@ -1,28 +1,185 @@
 ---
+import BaseHead from "../../components/BaseHead.astro";
+import Footer from "../../components/Footer.astro";
+import FormattedDate from "../../components/FormattedDate.astro";
+import Header from "../../components/Header.astro";
+import TagBadge from "../../components/TagBadge.astro";
+import { SITE } from "../../consts";
 import { pb } from "../../lib/pocketbase";
-import BlogPost from "../../layouts/BlogPost.astro";
 
 const { slug } = Astro.params;
 
-const post = await pb
-    .collection("posts")
-    .getFirstListItem(`slug="${slug}" && status="published"`);
+let post: any = null;
+try {
+    post = await pb
+        .collection("posts")
+        .getFirstListItem(`slug="${slug}" && status="published"`);
+} catch {
+    // PocketBase may not be available or post not found
+}
 
 if (!post) {
     return Astro.redirect("/404");
 }
 
-// Ensure dates are actual Date objects if they come as strings
-const pubDate = post.pubDate ? new Date(post.pubDate) : undefined;
+const pubDate = post.pubDate ? new Date(post.pubDate) : new Date(post.created);
 const updatedDate = post.updatedDate ? new Date(post.updatedDate) : undefined;
+const tags: string[] = post.tags || [];
 ---
 
-<BlogPost
-    title={post.title}
-    description={post.description}
-    pubDate={pubDate || new Date()}
-    updatedDate={updatedDate}
-    heroImage={post.heroImage}
->
-    <div set:html={post.content}></div>
-</BlogPost>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <BaseHead
+            title={post.title}
+            description={post.description || ""}
+            type="article"
+            publishedTime={pubDate}
+        />
+    </head>
+    <body>
+        <div class="reading-progress" id="reading-progress"></div>
+        <Header />
+        <main>
+            <article
+                class="container article-container"
+                itemscope
+                itemtype="https://schema.org/BlogPosting"
+            >
+                <meta itemprop="headline" content={post.title} />
+                <meta
+                    itemprop="datePublished"
+                    content={pubDate.toISOString()}
+                />
+                {
+                    updatedDate && (
+                        <meta
+                            itemprop="dateModified"
+                            content={updatedDate.toISOString()}
+                        />
+                    )
+                }
+                <meta itemprop="author" content={SITE.author} />
+
+                {
+                    post.heroImage && (
+                        <div class="hero-image">
+                            <img
+                                src={post.heroImage}
+                                alt={post.title}
+                                width="1200"
+                                height="600"
+                                itemprop="image"
+                            />
+                        </div>
+                    )
+                }
+
+                <div class="article-header">
+                    {
+                        tags.length > 0 && (
+                            <div class="article-tags">
+                                {tags.map((tag: string) => (
+                                    <TagBadge tag={tag} />
+                                ))}
+                            </div>
+                        )
+                    }
+                    <h1 itemprop="name">{post.title}</h1>
+                    <div class="article-meta">
+                        <time
+                            datetime={pubDate.toISOString()}
+                            itemprop="datePublished"
+                        >
+                            <FormattedDate date={pubDate} />
+                        </time>
+                        {
+                            updatedDate && (
+                                <span class="updated">
+                                    · Updated{" "}
+                                    <FormattedDate date={updatedDate} />
+                                </span>
+                            )
+                        }
+                    </div>
+                </div>
+
+                <div
+                    class="prose"
+                    itemprop="articleBody"
+                    set:html={post.content}
+                >
+                </div>
+            </article>
+        </main>
+        <Footer />
+
+        <script>
+            const progressBar = document.getElementById("reading-progress");
+            if (progressBar) {
+                window.addEventListener("scroll", () => {
+                    const scrollTop = window.scrollY;
+                    const docHeight =
+                        document.documentElement.scrollHeight -
+                        window.innerHeight;
+                    const progress =
+                        docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+                    progressBar.style.width = `${Math.min(progress, 100)}%`;
+                });
+            }
+        </script>
+    </body>
+</html>
+
+<style>
+    .article-container {
+        max-width: 860px;
+        padding-top: var(--space-2xl);
+        padding-bottom: var(--space-4xl);
+    }
+
+    .hero-image {
+        margin-bottom: var(--space-2xl);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+    }
+
+    .hero-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: var(--radius-lg);
+    }
+
+    .article-header {
+        margin-bottom: var(--space-2xl);
+        padding-bottom: var(--space-xl);
+        border-bottom: 1px solid var(--glass-border);
+    }
+
+    .article-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-xs);
+        margin-bottom: var(--space-md);
+    }
+
+    .article-header h1 {
+        font-size: clamp(2rem, 4vw, 2.75rem);
+        line-height: 1.15;
+        margin-bottom: var(--space-md);
+    }
+
+    .article-meta {
+        color: var(--text-tertiary);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+    }
+
+    .updated {
+        color: var(--text-tertiary);
+        font-style: italic;
+    }
+</style>

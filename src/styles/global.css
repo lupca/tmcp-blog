@@ -1,141 +1,409 @@
-/*
-  The CSS in this style tag is based off of Bear Blog's default CSS.
-  https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
-  License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
- */
+/* ============================================================
+   TMCP Engineering — Dark Theme Design System
+   ============================================================ */
 
+/* --- Design Tokens --- */
 :root {
-	--accent: #2337ff;
-	--accent-dark: #000d8a;
-	--black: 15, 18, 25;
-	--gray: 96, 115, 159;
-	--gray-light: 229, 233, 240;
-	--gray-dark: 34, 41, 57;
-	--gray-gradient: rgba(var(--gray-light), 50%), #fff;
-	--box-shadow:
-		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%), 0 16px 32px
-		rgba(var(--gray), 33%);
+	/* Base colors */
+	--bg-primary: #0a0a0f;
+	--bg-secondary: #12121a;
+	--bg-tertiary: #1a1a2e;
+	--bg-card: rgba(255, 255, 255, 0.03);
+	--bg-card-hover: rgba(255, 255, 255, 0.06);
+
+	/* Text colors */
+	--text-primary: #f0f0f5;
+	--text-secondary: #a0a0b8;
+	--text-tertiary: #6b6b80;
+	--text-link: #7dd3fc;
+
+	/* Accent palette */
+	--accent-cyan: #22d3ee;
+	--accent-violet: #a78bfa;
+	--accent-blue: #60a5fa;
+	--accent-green: #34d399;
+	--accent-pink: #f472b6;
+
+	/* Gradients */
+	--gradient-hero: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #0c4a6e 100%);
+	--gradient-accent: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+	--gradient-card-border: linear-gradient(135deg,
+			rgba(34, 211, 238, 0.3),
+			rgba(167, 139, 250, 0.3));
+
+	/* Glass effect */
+	--glass-bg: rgba(255, 255, 255, 0.04);
+	--glass-border: rgba(255, 255, 255, 0.08);
+	--glass-blur: 16px;
+
+	/* Spacing scale */
+	--space-xs: 0.25rem;
+	--space-sm: 0.5rem;
+	--space-md: 1rem;
+	--space-lg: 1.5rem;
+	--space-xl: 2rem;
+	--space-2xl: 3rem;
+	--space-3xl: 4rem;
+	--space-4xl: 6rem;
+
+	/* Radii */
+	--radius-sm: 6px;
+	--radius-md: 12px;
+	--radius-lg: 16px;
+	--radius-xl: 24px;
+	--radius-full: 9999px;
+
+	/* Shadows */
+	--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+	--shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+	--shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+	--shadow-glow-cyan: 0 0 20px rgba(34, 211, 238, 0.15);
+	--shadow-glow-violet: 0 0 20px rgba(167, 139, 250, 0.15);
+
+	/* Transitions */
+	--transition-fast: 150ms ease;
+	--transition-base: 250ms ease;
+	--transition-slow: 400ms ease;
+
+	/* Layout */
+	--max-width: 1200px;
+	--content-width: 720px;
+	--nav-height: 64px;
 }
-@font-face {
-	font-family: "Atkinson";
-	src: url("/fonts/atkinson-regular.woff") format("woff");
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
-}
-@font-face {
-	font-family: "Atkinson";
-	src: url("/fonts/atkinson-bold.woff") format("woff");
-	font-weight: 700;
-	font-style: normal;
-	font-display: swap;
-}
-body {
-	font-family: "Atkinson", sans-serif;
+
+/* --- Global Reset & Base --- */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
-	text-align: left;
-	background: linear-gradient(var(--gray-gradient)) no-repeat;
-	background-size: 100% 600px;
-	word-wrap: break-word;
-	overflow-wrap: break-word;
-	color: rgb(var(--gray-dark));
-	font-size: 20px;
+}
+
+html {
+	scroll-behavior: smooth;
+	scroll-padding-top: calc(var(--nav-height) + var(--space-xl));
+}
+
+body {
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	background-color: var(--bg-primary);
+	color: var(--text-primary);
+	font-size: 16px;
 	line-height: 1.7;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	overflow-x: hidden;
 }
-main {
-	width: 720px;
-	max-width: calc(100% - 2em);
-	margin: auto;
-	padding: 3em 1em;
+
+::selection {
+	background: rgba(34, 211, 238, 0.3);
+	color: var(--text-primary);
 }
+
+/* --- Typography --- */
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-	margin: 0 0 0.5rem 0;
-	color: rgb(var(--black));
+	color: var(--text-primary);
 	line-height: 1.2;
+	font-weight: 700;
+	letter-spacing: -0.02em;
 }
+
 h1 {
-	font-size: 3.052em;
+	font-size: clamp(2rem, 5vw, 3.5rem);
 }
+
 h2 {
-	font-size: 2.441em;
+	font-size: clamp(1.5rem, 3vw, 2.25rem);
 }
+
 h3 {
-	font-size: 1.953em;
+	font-size: clamp(1.25rem, 2.5vw, 1.75rem);
 }
+
 h4 {
-	font-size: 1.563em;
+	font-size: 1.25rem;
 }
+
 h5 {
-	font-size: 1.25em;
+	font-size: 1.1rem;
 }
+
+p {
+	color: var(--text-secondary);
+	margin-bottom: var(--space-md);
+}
+
+a {
+	color: var(--text-link);
+	text-decoration: none;
+	transition: color var(--transition-fast);
+}
+
+a:hover {
+	color: var(--accent-cyan);
+}
+
 strong,
 b {
 	font-weight: 700;
+	color: var(--text-primary);
 }
-a {
-	color: var(--accent);
+
+/* --- Layout Utilities --- */
+.container {
+	width: 100%;
+	max-width: var(--max-width);
+	margin: 0 auto;
+	padding: 0 var(--space-xl);
 }
-a:hover {
-	color: var(--accent);
+
+.section {
+	padding: var(--space-4xl) 0;
 }
-p {
-	margin-bottom: 1em;
+
+/* --- Glass Card --- */
+.glass-card {
+	background: var(--glass-bg);
+	border: 1px solid var(--glass-border);
+	border-radius: var(--radius-lg);
+	backdrop-filter: blur(var(--glass-blur));
+	-webkit-backdrop-filter: blur(var(--glass-blur));
+	transition:
+		transform var(--transition-base),
+		background var(--transition-base),
+		box-shadow var(--transition-base);
 }
+
+.glass-card:hover {
+	background: var(--bg-card-hover);
+	transform: translateY(-4px);
+	box-shadow: var(--shadow-lg);
+}
+
+/* --- Gradient Text --- */
+.gradient-text {
+	background: var(--gradient-accent);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+/* --- Button --- */
+.btn-primary {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-sm);
+	padding: var(--space-md) var(--space-xl);
+	background: var(--gradient-accent);
+	color: #000;
+	font-weight: 600;
+	font-size: 1rem;
+	border: none;
+	border-radius: var(--radius-full);
+	cursor: pointer;
+	transition:
+		transform var(--transition-fast),
+		box-shadow var(--transition-fast);
+	text-decoration: none;
+}
+
+.btn-primary:hover {
+	transform: translateY(-2px);
+	box-shadow: var(--shadow-glow-cyan);
+	color: #000;
+}
+
+/* --- Prose (Article content) --- */
+.prose {
+	max-width: var(--content-width);
+	margin: 0 auto;
+	color: var(--text-secondary);
+	font-size: 1.05rem;
+	line-height: 1.8;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+	color: var(--text-primary);
+	margin-top: var(--space-2xl);
+	margin-bottom: var(--space-md);
+}
+
+.prose h1:first-child,
+.prose h2:first-child {
+	margin-top: 0;
+}
+
 .prose p {
-	margin-bottom: 2em;
+	margin-bottom: 1.5em;
 }
-textarea {
-	width: 100%;
-	font-size: 16px;
+
+.prose a {
+	color: var(--accent-cyan);
+	text-decoration: underline;
+	text-underline-offset: 3px;
 }
-input {
-	font-size: 16px;
+
+.prose a:hover {
+	color: var(--accent-violet);
 }
-table {
-	width: 100%;
-}
-img {
+
+.prose img {
 	max-width: 100%;
 	height: auto;
-	border-radius: 8px;
+	border-radius: var(--radius-md);
+	margin: var(--space-xl) 0;
 }
-code {
-	padding: 2px 5px;
-	background-color: rgb(var(--gray-light));
-	border-radius: 2px;
+
+.prose blockquote {
+	border-left: 3px solid var(--accent-violet);
+	padding-left: var(--space-lg);
+	margin: var(--space-xl) 0;
+	color: var(--text-secondary);
+	font-style: italic;
 }
-pre {
-	padding: 1.5em;
-	border-radius: 8px;
+
+.prose ul,
+.prose ol {
+	padding-left: var(--space-xl);
+	margin-bottom: 1.5em;
 }
-pre > code {
+
+.prose li {
+	margin-bottom: var(--space-sm);
+	color: var(--text-secondary);
+}
+
+.prose code {
+	background: var(--bg-tertiary);
+	padding: 2px 6px;
+	border-radius: var(--radius-sm);
+	font-size: 0.9em;
+	color: var(--accent-cyan);
+	font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.prose pre {
+	background: var(--bg-secondary);
+	border: 1px solid var(--glass-border);
+	border-radius: var(--radius-md);
+	padding: var(--space-lg);
+	overflow-x: auto;
+	margin: var(--space-xl) 0;
+}
+
+.prose pre>code {
 	all: unset;
+	font-family: 'JetBrains Mono', 'Fira Code', monospace;
+	font-size: 0.875rem;
+	line-height: 1.6;
 }
-blockquote {
-	border-left: 4px solid var(--accent);
-	padding: 0 0 0 20px;
-	margin: 0;
-	font-size: 1.333em;
-}
-hr {
+
+.prose hr {
 	border: none;
-	border-top: 1px solid rgb(var(--gray-light));
+	border-top: 1px solid var(--glass-border);
+	margin: var(--space-2xl) 0;
 }
-@media (max-width: 720px) {
-	body {
-		font-size: 18px;
+
+.prose table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: var(--space-xl) 0;
+}
+
+.prose th,
+.prose td {
+	padding: var(--space-sm) var(--space-md);
+	border: 1px solid var(--glass-border);
+	text-align: left;
+}
+
+.prose th {
+	background: var(--bg-tertiary);
+	font-weight: 600;
+	color: var(--text-primary);
+}
+
+/* --- Reading Progress Bar --- */
+.reading-progress {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 0%;
+	height: 3px;
+	background: var(--gradient-accent);
+	z-index: 1000;
+	transition: width 50ms linear;
+}
+
+/* --- Animations --- */
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
 	}
-	main {
-		padding: 1em;
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
 	}
 }
 
+@keyframes gradientShift {
+	0% {
+		background-position: 0% 50%;
+	}
+
+	50% {
+		background-position: 100% 50%;
+	}
+
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+@keyframes pulse-glow {
+
+	0%,
+	100% {
+		box-shadow: 0 0 20px rgba(34, 211, 238, 0.1);
+	}
+
+	50% {
+		box-shadow: 0 0 40px rgba(34, 211, 238, 0.25);
+	}
+}
+
+.animate-in {
+	animation: fadeInUp 0.6s ease both;
+}
+
+.animate-delay-1 {
+	animation-delay: 0.1s;
+}
+
+.animate-delay-2 {
+	animation-delay: 0.2s;
+}
+
+.animate-delay-3 {
+	animation-delay: 0.3s;
+}
+
+.animate-delay-4 {
+	animation-delay: 0.4s;
+}
+
+/* --- Screen Reader Only --- */
 .sr-only {
 	border: 0;
 	padding: 0;
@@ -144,12 +412,34 @@ hr {
 	height: 1px;
 	width: 1px;
 	overflow: hidden;
-	/* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
-	clip: rect(1px 1px 1px 1px);
-	/* maybe deprecated but we need to support legacy browsers */
 	clip: rect(1px, 1px, 1px, 1px);
-	/* modern browsers, clip-path works inwards from each corner */
 	clip-path: inset(50%);
-	/* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
 	white-space: nowrap;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+	:root {
+		--nav-height: 56px;
+	}
+
+	body {
+		font-size: 15px;
+	}
+
+	.container {
+		padding: 0 var(--space-md);
+	}
+
+	.section {
+		padding: var(--space-2xl) 0;
+	}
+
+	h1 {
+		font-size: 1.75rem;
+	}
+
+	h2 {
+		font-size: 1.5rem;
+	}
 }

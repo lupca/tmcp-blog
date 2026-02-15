@@ -1,0 +1,26 @@
+---
+// TagBadge.astro — Small pill-shaped tag badge
+interface Props {
+    tag: string;
+}
+
+const { tag } = Astro.props;
+---
+
+<span class="tag-badge">{tag}</span>
+
+<style>
+    .tag-badge {
+        display: inline-block;
+        padding: 2px 10px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--accent-cyan);
+        background: rgba(34, 211, 238, 0.1);
+        border: 1px solid rgba(34, 211, 238, 0.2);
+        border-radius: var(--radius-full);
+        white-space: nowrap;
+    }
+</style>
