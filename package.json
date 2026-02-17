@@ -6,7 +6,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "vitest run && playwright test",
+    "test:unit": "vitest",
+    "test:e2e": "playwright test",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
@@ -16,5 +20,13 @@
     "astro": "^5.17.1",
     "pocketbase": "^0.26.8",
     "sharp": "^0.34.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.6",
+    "@playwright/test": "^1.58.2",
+    "@vitest/coverage-v8": "^4.0.18",
+    "happy-dom": "^20.6.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   }
 }
